@@ -1,11 +1,43 @@
 \documentclass[a4paper,12pt]{article}
 
-\usepackage[colorlinks,linkcolor=blue]{hyperref}
+\usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{geometry}
+\usepackage{color}
+\usepackage{listings}
 
+\graphicspath{{figures/}}
 \geometry{a4paper,left=2cm,right=2cm,top=1cm,bottom=1cm}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,      
+    urlcolor=blue,
+    citecolor=cyan,
+}
 
 %opening
 \title{acwj}
@@ -14,10 +46,6 @@
 \begin{document}
 
 \maketitle
-
-\begin{abstract}
-
-\end{abstract}
 
 \section{Part 0: Introducation}
 
@@ -45,7 +73,57 @@ Here are my goals, and non-goals, for the journey:
 
 \subsection{Target Language}
 
-The choice of a target language is diffcult. If I choose a high-level language like \textbf{Python}, \textbf{Go} etc.
+The choice of a target language is diffcult. If I choose a high-level language like \textbf{Python}, \textbf{Go} etc., then I'll have to implement a whole pile of libraries and classes as they are built-in to the language.
+
+I could write a compiler for a language like Lisp, but these can be \href{ftp://publications.ai.mit.edu/ai-publications/pdf/AIM-039.pdf}{done easily}.
+
+Instead, I've fallen back on the old standby and I'm going to write a compiler for a subset of C, enough to allow the compiler to compile itself. C is just a step up from assembly language (for some subset of C, not \href{https://en.wikipedia.org/wiki/C18_(C_standard_revision)}{C18}), and this will help make the task of compiling the C code down to assembly somewhat easier. Oh, and I also like C.
+
+\subsection{The Basic of a Compiler's Job}
+
+The job of a compiler is to translate input in one language (usually a high-level language) into a different output language (usually a lower-level language than the input). The main steps are:
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width= 0.9\textwidth]{parsing_steps.png}
+\end{figure}
+
+\begin{itemize}
+    \item Do \href{https://en.wikipedia.org/wiki/Lexical_analysis}{lexical analysis} to recognise the lexical elements. In several languages, {\color{red}=} is different to {\color{red}==}, so you can't just read a single {\color{red}=}. We call these lexical elements \textit{tokens}.
+    \item \href{https://en.wikipedia.org/wiki/Parsing}{Parse} the input, i.e. recognise the syntax and structural elements of the input and ensure that they conform to the \textit{grammar} of the language. For example, your language might have this decision-making structure:
+\end{itemize}
+
+\begin{lstlisting}
+    if (x < 23) {
+        print("x is smaller than 23\n");
+     }
+\end{lstlisting}
+
+but in another language you might write:
+
+\begin{lstlisting}
+    if (x < 23)
+        print("x is smaller than 23\n");
+\end{lstlisting}
+
+This is also the place where the compiler cna detect syntax errors, like if the semicolon was missing on the end of first \textit{print} statement.
+
+\begin{itemize}
+    \item Do \href{https://en.wikipedia.org/wiki/Semantic_analysis_(compilers)}{semantic analysis} of the input, i.e. understand the meaning of the input. This is actually different from recognising the syntax and structure. For example, in English, a sentence might have the form '\textbf{<subject> <verb> <adjective> <object>}'.
+\end{itemize}
+
+\begin{lstlisting}
+    David ate lovely bananas.
+    Jennifer hates green tomatoes.
+\end{lstlisting}
+
+\begin{itemize}
+    \item \href{https://en.wikipedia.org/wiki/Code_generation_(compiler)}{Translate} the meaning of the input into a different language. Here we convert the input, parts at a time, into a lower-level language.
+\end{itemize}
+
+\subsection{Resources}
+
+There's a lot of comipler resources out on the Internet. Here are the ones I'll be looking at.
 
 \section{Introducation}
 
