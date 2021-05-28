@@ -1,0 +1,52 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[colorlinks,linkcolor=blue]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+\geometry{a4paper,left=2cm,right=2cm,top=1cm,bottom=1cm}
+
+%opening
+\title{acwj}
+\author{Trganda}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Part 0: Introducation}
+
+I've decided to go on a compiler writing journey.
+In the past I've written some \href{https://github.com/DoctorWkt/pdp7-unix/blob/master/tools/as7}{assemblers}, 
+and I've written a \href{https://github.com/DoctorWkt/h-compiler}{simaple compiler} for a typeless language.
+But I've never written a compiler that can compile itself.
+So that's where I'm headed on this journey.
+
+As part of the process, I'm going to write up my work so that others can follow along.
+This will also help me to clarify my thoughts and ideas. Hopefully you, and I, will find this useful!
+
+\subsection{Goals of the journey}
+
+Here are my goals, and non-goals, for the journey:
+
+\begin{itemize}
+    \item To write a self-compiling compiler. I think that if the compiler can compile itself, it gets to call itself a real compiler.
+    \item To target at least one real hardware platform. I've seen a few compilers that generate code for hypothetical machines. 
+          I want my compiler to work on real hardware. Also, if possible, I want to write the compiler so that it can support multiple backends for different hardware platforms.
+    \item Pratical before research. There's a whole lot of research in the area of compilers. I want to start from absolute zero on this journey, so I'll tend to go for a practical approach and not a theory-heavy approach. That said, there will be times when I'll need to introduce (and implement) some theory-based stuff.
+    \item Follow the KISS principle: keep it simple, stupid! I'm definitely going to be using Ken Thompson's principe here: "When in doubt, use brute force."
+    \item Take a lot of small steps to reach the final goal. I'll break the journey up into a lot of simple steps instead of taking large leaps. This will make each new addition to the compiler a bite-sized and easily digestible thing.
+\end{itemize}
+
+\subsection{Target Language}
+
+The choice of a target language is diffcult. If I choose a high-level language like \textbf{Python}, \textbf{Go} etc.
+
+\section{Introducation}
+
+\end{document}
