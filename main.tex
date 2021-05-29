@@ -15,7 +15,7 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset{frame=tb,
-  language=Java,
+  language=C,
   aboveskip=3mm,
   belowskip=3mm,
   showstringspaces=false,
@@ -28,7 +28,7 @@
   stringstyle=\color{mauve},
   breaklines=true,
   breakatwhitespace=true,
-  tabsize=3
+  tabsize=4
 }
 
 \hypersetup{
@@ -91,33 +91,22 @@ The job of a compiler is to translate input in one language (usually a high-leve
 \begin{itemize}
     \item Do \href{https://en.wikipedia.org/wiki/Lexical_analysis}{lexical analysis} to recognise the lexical elements. In several languages, {\color{red}=} is different to {\color{red}==}, so you can't just read a single {\color{red}=}. We call these lexical elements \textit{tokens}.
     \item \href{https://en.wikipedia.org/wiki/Parsing}{Parse} the input, i.e. recognise the syntax and structural elements of the input and ensure that they conform to the \textit{grammar} of the language. For example, your language might have this decision-making structure:
-\end{itemize}
-
-\begin{lstlisting}
-    if (x < 23) {
-        print("x is smaller than 23\n");
-     }
-\end{lstlisting}
-
-but in another language you might write:
-
-\begin{lstlisting}
-    if (x < 23)
-        print("x is smaller than 23\n");
-\end{lstlisting}
-
-This is also the place where the compiler cna detect syntax errors, like if the semicolon was missing on the end of first \textit{print} statement.
-
-\begin{itemize}
-    \item Do \href{https://en.wikipedia.org/wiki/Semantic_analysis_(compilers)}{semantic analysis} of the input, i.e. understand the meaning of the input. This is actually different from recognising the syntax and structure. For example, in English, a sentence might have the form '\textbf{<subject> <verb> <adjective> <object>}'.
-\end{itemize}
-
-\begin{lstlisting}
-    David ate lovely bananas.
-    Jennifer hates green tomatoes.
-\end{lstlisting}
-
-\begin{itemize}
+    \begin{lstlisting}
+if (x < 23) {
+    print("x is smaller than 23\n");
+}
+    \end{lstlisting}
+    but in another language you might write:
+    \begin{lstlisting}
+if (x < 23)
+    print("x is smaller than 23\n");
+    \end{lstlisting}
+    This is also the place where the compiler cna detect syntax errors, like if the semicolon was missing on the end of first \textit{print} statement.
+    \item Do \href{https://en.wikipedia.org/wiki/Semantic_analysis_(compilers)}{semantic analysis} of the input, i.e. understand the meaning of the input. This is actually different from recognising the syntax and structure. For example, in English, a sentence might have the form \textbf{<subject> <verb> <adjective> <object>}.
+    \begin{lstlisting}
+David ate lovely bananas.
+Jennifer hates green tomatoes.
+    \end{lstlisting}
     \item \href{https://en.wikipedia.org/wiki/Code_generation_(compiler)}{Translate} the meaning of the input into a different language. Here we convert the input, parts at a time, into a lower-level language.
 \end{itemize}
 
@@ -125,6 +114,45 @@ This is also the place where the compiler cna detect syntax errors, like if the 
 
 There's a lot of comipler resources out on the Internet. Here are the ones I'll be looking at.
 
-\section{Introducation}
+\subsubsection{Learning Resources}
+
+If you want to start with some books, papers and tools on compilers, I'd highly recommend this list:
+
+\begin{itemize}
+    \item \href{https://github.com/aalhour/awesome-compilers}{Curated list of awesome resources on Compilers, Interpreters and Runtimes} by Ahmad Alhour
+\end{itemize}
+
+\subsubsection{Existing Compilers}
+
+While I'm going to build my own compiler, I plan on looking at other compilers for ideas and probably also borrow some of their code. Here are the ones I'm looking at:
+
+\begin{itemize}
+    \item \href{http://www.t3x.org/subc/}{SubC} by Nils M Holm
+    \item \href{https://github.com/rswier/swieros/blob/master/root/bin/c.c}{Swieros C Compiler} by Robert Swierczek
+    \item \href{https://github.com/DoctorWkt/fbcc}{fbcc} by Fabrice Bellard
+    \item \href{https://bellard.org/tcc}{tcc}, also by Fabrice Bellard and others
+    \item \href{https://github.com/yui0/catc}{catc}  by Yuichiro Nakada
+    \item \href{https://github.com/jserv/amacc}{amacc} by Jim Huang
+    \item \href{https://en.wikipedia.org/wiki/Small-C}{Small C} by Ron Cain, James E. Hendrix, derivatives by others
+\end{itemize}
+
+In particular, I'll be using a lot of the ideas, and some of the code, from the SubC compiler.
+
+\subsection{Setting Up the Development Enviroment}
+
+Assuming that you want to come along on this journey, here's what you'll need. I'm going to use a Linux development enviroment, so download and set up your favourite Linux system: I'm using Lubuntu $18.04$.
+
+I'm going to target two hardware platforms: Intel x86-64 and 32-bit ARM. I'll use a PC running Lubuntu $18.04$ as the Intel target, and a Raspberry Pi running Raspbian as the ARM target.
+
+On the Intel platform, we are going to need an existing C compiler. So, install this package.
+If there are any more tools required for a vanilla Linux system let me know.
+
+Finally, clone a copy of this Github repository.
+
+\subsection{The Next Step}
+
+In the next part of our compiler writing journey, we will start with the code to scan our input file and find the \textit{tokens} that are the lexical elements of our language.
+
+\section{Part 1: Introduction to Lexical Scanning}
 
 \end{document}
