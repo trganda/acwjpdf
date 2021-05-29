@@ -433,4 +433,46 @@ Single character tokens are easy to scan, but multi-character tokens are a bit h
 
 In the next part of our compiler writing journey, we will build a recursive descent parser to interpret the grammer of our input files, and calculate \& print out the final value for each file.
 
+\section{Part 2: Introduction to Parsing}
+
+In this part of our compiler writing journey, I'm going to introduce the basics of a parser. As I mentioned in the first part, the job of the parser is to recognise the syntax and structural elements of the input and ensure that they conform to the $grammer$ of the language.
+
+We already have several language elements that we can scan in, i.e. our tokens:
+
+\begin{itemize}
+    \item the four basic maths operators: $*, /, +$ and $-$
+    \item deciaml whole numbers which have $1$ or more digits $0$ .. $9$
+\end{itemize}
+
+Now let's define a grammer for the language that our parser will recognise.
+
+\subsection{BNF: Backus-Naur Form}
+
+You will come across the use of \href{https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form}{BNF} at some point if you get into dealing with computer languages. I will just introduce enough of the BNF syntax here to express the grammar we want to recognise.
+
+We want a grammer to express maths expressions with whole numbers. Here is the BNF description of the grammer:
+
+\begin{lstlisting}
+    expression: number
+    | expression '*' expression
+    | expression '/' expression
+    | expression '+' expression
+    | expression '-' expression
+    ;
+
+    number:  T_INTLIT
+    ;
+\end{lstlisting}
+
+The vertical bars separate options in the grammar, so the above says:
+
+\begin{itemize}
+    \item An expression could be just a number, or
+    \item An expression is two expressions separated by a $*$ token, or
+    \item An expression is two expressions separated by a $/$ token, or
+    \item An expression is two expressions separated by a $+$ token, or
+    \item An expression is two expressions separated by a $-$ token, or
+    \item A number is always a $T\_INTLIT$ token
+\end{itemize}
+
 \end{document}
