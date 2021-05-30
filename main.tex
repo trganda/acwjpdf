@@ -497,6 +497,61 @@ We can write pseudo-code that look like this:
     }
 \end{lstlisting}
 
-Let's run this function on the input $2 + 3 - 5 T\_EOF$ where $T\_EOF$ is a token that reflects the end of the input. I will number each call to $expression()$.
+Let's run this function on the input $2 + 3 - 5\quad T\_EOF$ where $T\_EOF$ is a token that reflects the end of the input. I will number each call to $expression()$.
+
+\begin{lstlisting}
+    expression0:
+    Scan in the 2, it's a number
+    Get next token, +, which isn't T_EOF
+    Call expression()
+  
+      expression1:
+        Scan in the 3, it's a number
+        Get next token, -, which isn't T_EOF
+        Call expression()
+  
+          expression2:
+            Scan in the 5, it's a number
+            Get next token, T_EOF, so return from expression2
+  
+        return from expression1
+    return from expression0
+\end{lstlisting}
+
+Yes, the function was able to recursively parse the input $2 + 3 - 5\quad T\_EOF$.
+
+Of course, we haven't done anything with the input, but that isn't the job of the parser. The parser's job is to $recognise$ the input, and warn of any syntax errors. Someone else is going to do the $semantic analysis$ of the input, i.e. to understand and perform the meaning of this input.
+
+\begin{quote}
+Later on, you will see that this isn't actually true. It often makes sense to interwine the syntax analysis and semantic analysis. 
+\end{quote}
+
+\subsection{Abstract Syntax Trees}
+
+To do the semantic analysis, we need code that either interprets the recoginsed input, or translates it to another format, e.g. assembly code. In this part of the journey, we will build an interpreter for the input. But to get there, we are first going to convert the input into an \href{https://en.wikipedia.org/wiki/Abstract_syntax_tree}{abstract syntax tree} also known as an AST.
+
+I highly recommend you read this short explanation of ASTs:
+\begin{itemize}
+    \item \href{https://medium.com/basecs/leveling-up-ones-parsing-game-with-asts-d7a6fc2400ff}{Leveling Up One’s Parsing Game With ASTs} by Vaidehi Joshi
+\end{itemize}
+
+It's well written and really help to explain the purpose and structure of ASTs. Don't worry, I'll be here when you get back.
+
+The structure of each node in the AST that we will build is described in $defs.h$:
+
+\begin{lstlisting}
+    // AST node types
+    enum {
+      A_ADD, A_SUBTRACT, A_MULTIPLY, A_DIVIDE, A_INTLIT
+    };
+    
+    // Abstract Syntax Tree structure
+    struct ASTnode {
+      int op;                               // "Operation" to be performed on this tree
+      struct ASTnode *left;                 // Left and right child trees
+      struct ASTnode *right;
+      int intvalue;                         // For A_INTLIT, the integer value
+    };
+\end{lstlisting}
 
 \end{document}
