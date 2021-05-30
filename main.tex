@@ -475,4 +475,28 @@ The vertical bars separate options in the grammar, so the above says:
     \item A number is always a $T\_INTLIT$ token
 \end{itemize}
 
+It should be pretty obvious that the BNF definition of the grammar is $recursive$: an expression is defined by referencing other expressions. But there is a way to \textbf{bottom-out} the recursion: when an expression turns out to be a number, this is always a $T\_INTLIT$ token and thus not recursive.
+
+In BNF, we say that "expression" and "number" are $non-termainl$ symbols, as they are produced by rules in the grammar. Howerer, $T\_INTLIT$ is a $terminal$ symbol as it is not defined by any rule. Instead, it is an already-recognised token in the language. Similarly, the four maths operator tokens are terminal symbols.
+
+\subsection{Recursive Descent Parsing}
+
+Given that the grammar for our language is recursive, it makes sense for us to try and parse it recursively. What we need to do is to read in a token, then $look ahead$ to the next token. Based on what the next token is, we can then decide what path we need to take to parse the input. This may require us to recursively call a function that has already been called.
+
+In our case, the first token in any expression will be a number and this may be followed by maths operator. After that there may only be a single number, or there may be the start of a whole new expression. How can we parse this recursively?
+
+We can write pseudo-code that look like this:
+
+\begin{lstlisting}
+    function expression() {
+        Scan and check the first token is a number. Error if it's not
+        Get the next token
+        If we have reached the end of the input, return, i.e. base case
+      
+        Otherwise, call expression()
+    }
+\end{lstlisting}
+
+Let's run this function on the input $2 + 3 - 5 T\_EOF$ where $T\_EOF$ is a token that reflects the end of the input. I will number each call to $expression()$.
+
 \end{document}
