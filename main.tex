@@ -554,4 +554,130 @@ The structure of each node in the AST that we will build is described in $defs.h
     };
 \end{lstlisting}
 
+Some AST nodes, like those with $op$ values A\_ADD and A\_SUBTRACT have two child ASTs that are pointed to by $left$ and $right$. Later on, we will add or subtract the values of the sub-trees.
+
+Alternatively, an AST node with the $op$ value A\_INTLIT represents an integer value. It has no sub-tree children, just a value in the $intvalue$ field.
+
+\subsection{Building AST Nodes and Trees}
+
+The code in $tree.c$ has the functions to build ASTs. The most general function, $mkastnode()$ takes values for all four fields in an AST node. It allocates the node, populates the field values and returns a pointer to the node:
+
+\begin{lstlisting}
+    // Build and return a generic AST node
+    struct ASTnode *mkastnode(int op, struct ASTnode *left,
+                              struct ASTnode *right, int intvalue) {
+      struct ASTnode *n;
+    
+      // Malloc a new ASTnode
+      n = (struct ASTnode *) malloc(sizeof(struct ASTnode));
+      if (n == NULL) {
+        fprintf(stderr, "Unable to malloc in mkastnode()\n");
+        exit(1);
+      }
+      // Copy in the field values and return it
+      n->op = op;
+      n->left = left;
+      n->right = right;
+      n->intvalue = intvalue;
+      return (n);
+    }
+\end{lstlisting}
+
+Given this, we can write more specific functions that make a leaf AST node (i.e. one with no children), and make an AST node with a single child:
+
+\begin{lstlisting}
+    // Make an AST leaf node
+    struct ASTnode *mkastleaf(int op, int intvalue) {
+      return (mkastnode(op, NULL, NULL, intvalue));
+    }
+    
+    // Make a unary AST node: only one child
+    struct ASTnode *mkastunary(int op, struct ASTnode *left, int intvalue) {
+      return (mkastnode(op, left, NULL, intvalue));
+    }
+\end{lstlisting}
+
+\subsection{Purpose of the AST}
+
+We are going to use an AST to store each expression that we recognise so that, later on, we can traverse it recursively to calculate the final value of the expression. We do want to deal with the precedence of the maths operators. Here is an example.
+
+Consider the expression $2*3+4*5$. Now, multiplication has higher precedence that addition. Therefore, we want to $bind$ the multiplication operands together and perform these operations before we do the addition.
+
+If we generated the AST tree to look like this:
+
+\begin{lstlisting}
+      +
+     / \
+    /   \
+   /     \
+  *       *
+ / \     / \
+2   3   4   5
+\end{lstlisting}
+
+then, when traversing the tree, we would perform $2*3$ first, then $4*5$. Once we have these results, we can then pass them up to the root of the tree to perform the addition.
+
+\subsection{A Naive Expression Parser}
+
+Now, we could re-use the token values from our scanner as the AST node operation values, but I like to keep the concept of tokens and AST nodes separate. So, to start with, I'm going to have a function to map the token values into AST node operation values. This, along with the rest of the parser, is in $expr.c$:
+
+\begin{lstlisting}
+    // Convert a token into an AST operation.
+    int arithop(int tok) {
+      switch (tok) {
+        case T_PLUS:
+          return (A_ADD);
+        case T_MINUS:
+          return (A_SUBTRACT);
+        case T_STAR:
+          return (A_MULTIPLY);
+        case T_SLASH:
+          return (A_DIVIDE);
+        default:
+          fprintf(stderr, "unknown token in arithop() on line %d\n", Line);
+          exit(1);
+      }
+    }
+\end{lstlisting}
+
+The default statement in the switch statement fires when we can't convert the given token into an AST node type. It's going to form part of the syntax checking in our parser.
+
+We need a function to check that the next token is an integer literal, and to build an AST node to hold the literal value. Here it is:
+
+\begin{lstlisting}
+    // Parse a primary factor and return an
+    // AST node representing it.
+    static struct ASTnode *primary(void) {
+      struct ASTnode *n;
+    
+      // For an INTLIT token, make a leaf AST node for it
+      // and scan in the next token. Otherwise, a syntax error
+      // for any other token type.
+      switch (Token.token) {
+        case T_INTLIT:
+          n = mkastleaf(A_INTLIT, Token.intvalue);
+          scan(&Token);
+          return (n);
+        default:
+          fprintf(stderr, "syntax error on line %d\n", Line);
+          exit(1);
+      }
+    }
+\end{lstlisting}
+
+This assumes that there is a global variable $Token$, and that it already has the most recent token scanned in from the input. In $data.h$:
+
+\begin{lstlisting}
+    extern_ struct token    Token;
+\end{lstlisting}
+
+and in $main()$:
+
+\begin{lstlisting}
+    scan(&Token);                 // Get the first token from the input
+    n = binexpr();                // Parse the expression in the file
+\end{lstlisting}
+
+Now we can write the code for the parser:
+
 \end{document}
