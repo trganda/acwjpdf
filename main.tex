@@ -34,7 +34,7 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
-    filecolor=blue,      
+    filecolor=blue,
     urlcolor=blue,
     citecolor=cyan,
 }
@@ -50,7 +50,7 @@
 \section{Part 0: Introducation}
 
 I've decided to go on a compiler writing journey.
-In the past I've written some \href{https://github.com/DoctorWkt/pdp7-unix/blob/master/tools/as7}{assemblers}, 
+In the past I've written some \href{https://github.com/DoctorWkt/pdp7-unix/blob/master/tools/as7}{assemblers},
 and I've written a \href{https://github.com/DoctorWkt/h-compiler}{simaple compiler} for a typeless language.
 But I've never written a compiler that can compile itself.
 So that's where I'm headed on this journey.
@@ -64,7 +64,7 @@ Here are my goals, and non-goals, for the journey:
 
 \begin{itemize}
     \item To write a self-compiling compiler. I think that if the compiler can compile itself, it gets to call itself a real compiler.
-    \item To target at least one real hardware platform. I've seen a few compilers that generate code for hypothetical machines. 
+    \item To target at least one real hardware platform. I've seen a few compilers that generate code for hypothetical machines.
           I want my compiler to work on real hardware. Also, if possible, I want to write the compiler so that it can support multiple backends for different hardware platforms.
     \item Pratical before research. There's a whole lot of research in the area of compilers. I want to start from absolute zero on this journey, so I'll tend to go for a practical approach and not a theory-heavy approach. That said, there will be times when I'll need to introduce (and implement) some theory-based stuff.
     \item Follow the KISS principle: keep it simple, stupid! I'm definitely going to be using Ken Thompson's principe here: "When in doubt, use brute force."
@@ -191,13 +191,13 @@ The $scan.c$ file holds the functions of our lexical scanner. We are going to re
 \begin{lstlisting}
 static int next(void) {
     int c;
-  
+
     if (Putback) {                // Use the character put
         c = Putback;              // back if there is one
         Putback = 0;
         return c;
     }
-        
+
     c = fgetc(Infile);            // Read from input file
     if ('\n' == c)
     Line++;                       // Increment line count
@@ -252,10 +252,10 @@ So new we can read characters in while skipping whitesapce; we can also put back
     // Return 1 if token valid, 0 if no tokens left.
     int scan(struct token *t) {
       int c;
-    
+
       // Skip whitespace
       c = skip();
-    
+
       // Determine the token based on
       // the input character
       switch (c) {
@@ -276,10 +276,10 @@ So new we can read characters in while skipping whitesapce; we can also put back
       default:
         // More here soon
       }
-    
+
       // We found a token
       return (1);
-    }    
+    }
 \end{lstlisting}
 
 That's it for the simple one-character tokens: for each recognised character, turn it into a token. You may ask: why not just put the recognised character into the $struct token$? The answer is that later we will need to recognised multi-character tokens such as $==$ and keywords like $if$ and $while$. So it will make life easier to have an enumerated list of token values.
@@ -310,13 +310,13 @@ Once we hit a decimal digit character, we call the helper function $scanint()$ w
 // the value as a string in Text.
 static int scanint(int c) {
     int k, val = 0;
-    
+
     // Convert each character into an int value
     while ((k = chrpos("0123456789", c)) >= 0) {
         val = val * 10 + k;
         c = next();
     }
-    
+
     // We hit a non-integer character, put it back.
     putback(c);
     return val;
@@ -344,7 +344,7 @@ Here's the code for $chrpos()$:
     // in string s, or -1 if c not found
     static int chrpos(char *s, int c) {
       char *p;
-    
+
       p = strchr(s, c);
       return (p ? p - s : -1);
     }
@@ -373,12 +373,12 @@ And $scanfile()$ loops while there is new token and prints out the details of th
 \begin{lstlisting}
     // List of printable tokens
     char *tokstr[] = { "+", "-", "*", "/", "intlit" };
-    
+
     // Loop scanning in all the tokens in the input file.
     // Print out details of each token found.
     static void scanfile() {
         struct token T;
-    
+
         while (scan(&T)) {
             printf("Token %s", tokstr[T.token]);
             if (T.token == T_INTLIT)
@@ -395,10 +395,10 @@ I've provided some example input files so you can see what tokens the scanner fi
 \begin{lstlisting}
     $ make
     cc -o scanner -g main.c scan.c
-    
+
     $ cat input01
     2 + 3 * 5 - 8 / 3
-    
+
     $ ./scanner input01
     Token intlit, value 2
     Token +
@@ -409,13 +409,13 @@ I've provided some example input files so you can see what tokens the scanner fi
     Token intlit, value 8
     Token /
     Token intlit, value 3
-    
+
     $ cat input04
     23 +
     18 -
     45.6 * 2
     / 18
-    
+
     $ ./scanner input04
     Token intlit, value 23
     Token +
@@ -492,7 +492,7 @@ We can write pseudo-code that look like this:
         Scan and check the first token is a number. Error if it's not
         Get the next token
         If we have reached the end of the input, return, i.e. base case
-      
+
         Otherwise, call expression()
     }
 \end{lstlisting}
@@ -504,16 +504,16 @@ Let's run this function on the input $2 + 3 - 5\quad T\_EOF$ where $T\_EOF$ is a
     Scan in the 2, it's a number
     Get next token, +, which isn't T_EOF
     Call expression()
-  
+
       expression1:
         Scan in the 3, it's a number
         Get next token, -, which isn't T_EOF
         Call expression()
-  
+
           expression2:
             Scan in the 5, it's a number
             Get next token, T_EOF, so return from expression2
-  
+
         return from expression1
     return from expression0
 \end{lstlisting}
@@ -523,7 +523,7 @@ Yes, the function was able to recursively parse the input $2 + 3 - 5\quad T\_EOF
 Of course, we haven't done anything with the input, but that isn't the job of the parser. The parser's job is to $recognise$ the input, and warn of any syntax errors. Someone else is going to do the $semantic analysis$ of the input, i.e. to understand and perform the meaning of this input.
 
 \begin{quote}
-Later on, you will see that this isn't actually true. It often makes sense to interwine the syntax analysis and semantic analysis. 
+Later on, you will see that this isn't actually true. It often makes sense to interwine the syntax analysis and semantic analysis.
 \end{quote}
 
 \subsection{Abstract Syntax Trees}
@@ -544,7 +544,7 @@ The structure of each node in the AST that we will build is described in $defs.h
     enum {
       A_ADD, A_SUBTRACT, A_MULTIPLY, A_DIVIDE, A_INTLIT
     };
-    
+
     // Abstract Syntax Tree structure
     struct ASTnode {
       int op;                               // "Operation" to be performed on this tree
@@ -567,7 +567,7 @@ The code in $tree.c$ has the functions to build ASTs. The most general function,
     struct ASTnode *mkastnode(int op, struct ASTnode *left,
                               struct ASTnode *right, int intvalue) {
       struct ASTnode *n;
-    
+
       // Malloc a new ASTnode
       n = (struct ASTnode *) malloc(sizeof(struct ASTnode));
       if (n == NULL) {
@@ -590,7 +590,7 @@ Given this, we can write more specific functions that make a leaf AST node (i.e.
     struct ASTnode *mkastleaf(int op, int intvalue) {
       return (mkastnode(op, NULL, NULL, intvalue));
     }
-    
+
     // Make a unary AST node: only one child
     struct ASTnode *mkastunary(int op, struct ASTnode *left, int intvalue) {
       return (mkastnode(op, left, NULL, intvalue));
@@ -649,7 +649,7 @@ We need a function to check that the next token is an integer literal, and to bu
     // AST node representing it.
     static struct ASTnode *primary(void) {
       struct ASTnode *n;
-    
+
       // For an INTLIT token, make a leaf AST node for it
       // and scan in the next token. Otherwise, a syntax error
       // for any other token type.
@@ -679,5 +679,405 @@ and in $main()$:
 \end{lstlisting}
 
 Now we can write the code for the parser:
+
+\begin{lstlisting}
+    // Return an AST tree whose root is a binary operator
+    struct ASTnode *binexpr(void) {
+      struct ASTnode *n, *left, *right;
+      int nodetype;
+
+      // Get the integer literal on the left.
+      // Fetch the next token at the same time.
+      left = primary();
+
+      // If no tokens left, return just the left node
+      if (Token.token == T_EOF)
+        return (left);
+
+      // Convert the token into a node type
+      nodetype = arithop(Token.token);
+
+      // Get the next token in
+      scan(&Token);
+
+      // Recursively get the right-hand tree
+      right = binexpr();
+
+      // Now build a tree with both sub-trees
+      n = mkastnode(nodetype, left, right, 0);
+      return (n);
+    }
+\end{lstlisting}
+
+Notice that nowhere in this naive parser code is there anything to deal with different operator precedence. As it stands, the code treats all operators as having equal precedence. If you follow the code as it parser the expression $2*3+4*5$, you will see that it builds this AST:
+
+\begin{lstlisting}
+     *
+    / \
+   2   +
+      / \
+     3   *
+        / \
+       4   5
+\end{lstlisting}
+
+This is definitely not correct. It will multiply $4*5$ to get 20, then do $3+20$ to ge $23$ insetad of doing $2*3$ to get 6.
+
+So why did I do this? I wanted to show you that writign a simple parser is easy, but getting it to also do the semantic analysis is harder.
+
+\subsection{Interpreting the Tree}
+
+Now that we have our (incorrect) AST tree, let's write some code to interpret it. Again, we are going to write recursive code to traverse the tree. Here's the pseudo-code:
+
+\begin{lstlisting}
+    interpretTree:
+    First, interpret the left-hand sub-tree and get its value
+    Then, interpret the right-hand sub-tree and get its value
+    Perform the operation in the node at the root of our tree
+    on the two sub-tree values, and return this value
+\end{lstlisting}
+
+Going back to the correct AST tree:
+
+\begin{lstlisting}
+          +
+         / \
+        /   \
+       /     \
+      *       *
+     / \     / \
+    2   3   4   5
+\end{lstlisting}
+
+the call structure would look like:
+
+\begin{lstlisting}
+    interpretTree0(tree with +):
+    Call interpretTree1(left tree with *):
+       Call interpretTree2(tree with 2):
+         No maths operation, just return 2
+       Call interpretTree3(tree with 3):
+         No maths operation, just return 3
+       Perform 2 * 3, return 6
+
+    Call interpretTree1(right tree with *):
+       Call interpretTree2(tree with 4):
+         No maths operation, just return 4
+       Call interpretTree3(tree with 5):
+         No maths operation, just return 5
+       Perform 4 * 5, return 20
+
+    Perform 6 + 20, return 26
+\end{lstlisting}
+
+\subsection{Code to Interpret the Tree}
+
+This is in $interp.c$ and follows the above pseudo-code:
+
+\begin{lstlisting}
+    // Given an AST, interpret the
+    // operators in it and return
+    // a final value.
+    int interpretAST(struct ASTnode *n) {
+      int leftval, rightval;
+
+      // Get the left and right sub-tree values
+      if (n->left)
+        leftval = interpretAST(n->left);
+      if (n->right)
+        rightval = interpretAST(n->right);
+
+      switch (n->op) {
+        case A_ADD:
+          return (leftval + rightval);
+        case A_SUBTRACT:
+          return (leftval - rightval);
+        case A_MULTIPLY:
+          return (leftval * rightval);
+        case A_DIVIDE:
+          return (leftval / rightval);
+        case A_INTLIT:
+          return (n->intvalue);
+        default:
+          fprintf(stderr, "Unknown AST operator %d\n", n->op);
+          exit(1);
+      }
+    }
+\end{lstlisting}
+
+Again, the default statement in the switch statement fires when we can't interpret the AST node type. It's going to form part of the sematic checking in our parser.
+
+\subsection{Building the Parser}
+
+There is some other code here, it's looks like the call to the interpreter in $main()$:
+
+\begin{lstlisting}
+    scan(&Token);                 // Get the first token from the input
+    n = binexpr();                // Parse the expression in the file
+    printf("%d\n", interpretAST(n));      // Calculate the final result
+    exit(0);
+\end{lstlisting}
+
+You can now build the parser by doing:
+
+\begin{lstlisting}
+    $ make
+    cc -o parser -g expr.c interp.c main.c scan.c tree.c
+\end{lstlisting}
+
+I've provided several input files for you to test the parser on, but of curse you can create you own. Remember, the calculated results are incorrect, but the parser should detect input errors like consecutive numbers, consecutive operators, and a number missing at the end of the input. I've also added some debugging code to the interpreter so you can see which AST tree nodes get evaluated in which order:
+
+\begin{lstlisting}
+    $ cat input01
+    2 + 3 * 5 - 8 / 3
+
+    $ ./parser input01
+    int 2
+    int 3
+    int 5
+    int 8
+    int 3
+    8 / 3
+    5 - 2
+    3 * 3
+    2 + 9
+    11
+
+    $ cat input02
+    13 -6+  4*
+    5
+           +
+    08 / 3
+
+    $ ./parser input02
+    int 13
+    int 6
+    int 4
+    int 5
+    int 8
+    int 3
+    8 / 3
+    5 + 2
+    4 * 7
+    6 + 28
+    13 - 34
+    -21
+
+    $ cat input03
+    12 34 + -56 * / - - 8 + * 2
+
+    $ ./parser input03
+    unknown token in arithop() on line 1
+
+    $ cat input04
+    23 +
+    18 -
+    45.6 * 2
+    / 18
+
+    $ ./parser input04
+    Unrecognised character . on line 3
+
+    $ cat input05
+    23 * 456abcdefg
+
+    $ ./parser input05
+    Unrecognised character a on line 1
+\end{lstlisting}
+
+\subsection{Conclusion and What's Next}
+
+A parser recognises the grammar of the language and checks that the input to the compiler conforms to the grammar. If it doesn't, the parser should print out an error message. As our expression grammar is recursive, we have chosen to write a recursive descent parser to recognise our expression.
+
+Right now the parser works, as shown by the above output, but it fails to get the semantics of the input right. In other words, it doesn't calculate the correct value of the expressions.
+
+In the next part of our compiler writing journey, we will modify the parser so that it also does the semantic analysis of the expressions to get the right maths results.
+
+\section{Part 3: Operator Precedence}
+
+We saw in the previous part of our compiler writing journey that a parser doesn't necessarily enforce the semantics of our language. It only enforces the syntax and structural rules of the grammar.
+
+We ended up with code that calculates the wrong value of expressions like $2*3+4*5$, because the code created an AST that looks like:
+
+\begin{lstlisting}
+   *
+  / \
+ 2   +
+    / \
+   3   *
+      / \
+     4   5
+\end{lstlisting}
+
+instead of:
+
+\begin{lstlisting}
+      +
+     / \
+    /   \
+   /     \
+  *       *
+ / \     / \
+2   3   4   5
+\end{lstlisting}
+
+To solve this, we have to add code to our parser to perform operator precedence. There are (at least) two ways of doing this:
+
+\begin{itemize}
+  \item Making the operator precedence explicit in the language's grammar
+  \item Influencing the existing parser with an operator precedence table
+\end{itemize}
+
+\subsection{Making the Operator Precedence Explicit}
+
+Here is our grammar from the last part of the journey:
+
+\begin{lstlisting}
+  expression: number
+            | expression '*' expression
+            | expression '/' expression
+            | expression '+' expression
+            | expression '-' expression
+            ;
+
+  number:  T_INTLIT
+           ;
+\end{lstlisting}
+
+Note that there is no differentiation between any of the four maths operator. Let's tweak the grammar so that there is a difference:
+
+\begin{lstlisting}
+  expression: additive_expression
+    ;
+
+  additive_expression:
+      multiplicative_expression
+    | additive_expression '+' multiplicative_expression
+    | additive_expression '-' multiplicative_expression
+    ;
+
+  multiplicative_expression:
+      number
+    | number '*' multiplicative_expression
+    | number '/' multiplicative_expression
+    ;
+
+  number:  T_INTLIT
+        ;
+\end{lstlisting}
+
+We now have two types of expression: $additive$ expressions and $multiplicative$ expressions. Note that the grammar now forces the numbers to be part of multiplicative expressions only. This forces the $*$ and $/$ operator to bind more tightly to the numbers on either side, thus having higher precedence.
+
+Any additive expression is actually either a multiplicative expression by itself, or an additive (i.e. multiplicative) expression followed by a $+$ or $-$ operator then another multiplicative expression. The additive expression is now at a much lower precedence than the multiplicative expression.
+
+\subsection{Doing the Above in the Recursive Descent Parser}
+
+How do we take the above version of our grammar and implement it into our recursive descent parser? I've done this in the file $expr2.c$ and I'll cover the code below.
+
+The answer is to have a $multiplicative_expr()$ function to deal with the $*$ and $/$ operators, and an $additive_expr()$ function to deal with the lower precedence $+$ and $-$ operator.
+
+Both functions are going to read in something and an operator. Then, while there are following operators at the same precedence, each function will parse some more of the input and combine the left and right halves with the first operator.
+
+However, $additive_expr()$ will have to defer to the higher-precedence $multiplicative_expr()$ function. Here is how this is done.
+
+\subsection{additive\_expr()}
+
+\begin{lstlisting}
+    // Return an AST tree whose root is a '+' or '-' binary operator
+    struct ASTnode *additive_expr(void) {
+      struct ASTnode *left, *right;
+      int tokentype;
+
+      // Get the left sub-tree at a higher precedence than us
+      left = multiplicative_expr();
+
+      // If no tokens left, return just the left node
+      tokentype = Token.token;
+      if (tokentype == T_EOF)
+        return (left);
+
+      // Loop working on token at our level of precedence
+      while (1) {
+        // Fetch in the next integer literal
+        scan(&Token);
+
+        // Get the right sub-tree at a higher precedence than us
+        right = multiplicative_expr();
+
+        // Join the two sub-trees with our low-precedence operator
+        left = mkastnode(arithop(tokentype), left, right, 0);
+
+        // And get the next token at our precedence
+        tokentype = Token.token;
+        if (tokentype == T_EOF)
+          break;
+      }
+
+      // Return whatever tree we have created
+      return (left);
+    }
+\end{lstlisting}
+
+Right at the beginning, we immediately call $multiplicative\_expr()$ in case the first operator is a high-precedence $*$ or $/$. That function will only return when it encounters a low-precedence $+$ or $-$ operator.
+
+Thus, when we hit the $while$ loop, we know we have a $+$ or $-$ operator. We loop until there are no tokens left in the input, i.e. when we hit the T\_EOF token.
+
+Inside the loop, we call $multiplicative\_expr()$ again in case any future operators are higher precedence than us. Again, this will return when they are not.
+
+Once we have a left and right sub-tree, we can combine them with the operator we got the last time around the loop. This repeats, so that if we had the expression $2+4+6$, we would end up with the AST tree:
+
+\begin{lstlisting}
+      +
+     / \
+    +   6
+   / \
+  2   4
+\end{lstlisting}
+
+But if $multiplicative\_expr()$ had its own higher precedence operators, we would be combining sub-trees with multiple nodes in them.
+
+\subsection{multiplicative\_expr()}
+
+\begin{lstlisting}
+  // Return an AST tree whose root is a '*' or '/' binary operator
+  struct ASTnode *multiplicative_expr(void) {
+    struct ASTnode *left, *right;
+    int tokentype;
+  
+    // Get the integer literal on the left.
+    // Fetch the next token at the same time.
+    left = primary();
+  
+    // If no tokens left, return just the left node
+    tokentype = Token.token;
+    if (tokentype == T_EOF)
+      return (left);
+  
+    // While the token is a '*' or '/'
+    while ((tokentype == T_STAR) || (tokentype == T_SLASH)) {
+      // Fetch in the next integer literal
+      scan(&Token);
+      right = primary();
+  
+      // Join that with the left integer literal
+      left = mkastnode(arithop(tokentype), left, right, 0);
+  
+      // Update the details of the current token.
+      // If no tokens left, return just the left node
+      tokentype = Token.token;
+      if (tokentype == T_EOF)
+        break;
+    }
+  
+    // Return whatever tree we have created
+    return (left);
+  }
+\end{lstlisting}
+
+The code is similar to $additive\_expr()$ except that we get to call $primary()$ to get real integer literals! We also only loop when we have operators at our high precedence level, i.e. $*$ and $/$ operators. As soon as we hit a low precedence operator, we simply return the sub-tree that we've built to this point. This goes back to $additive\_expr()$ to deal with the low precedence operator.
+
+\subsection{Drawbacks of the Above}
+
+The above way  of constructing a recursive descent parser with explicit operator precedence can be inefficient because of all the function calls needed to reach the right level of precedence. There also has to be functions to deal with each level of operator precedence, so we end up with lots of lines of code.
 
 \end{document}
