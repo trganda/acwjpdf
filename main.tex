@@ -1,14 +1,12 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[journal, onecolumn]{IEEEtran}
 
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage{geometry}
 \usepackage{color}
 \usepackage{listings}
 
 \graphicspath{{figures/}}
-\geometry{a4paper,left=2cm,right=2cm,top=1cm,bottom=1.8cm}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -189,28 +187,28 @@ When the token is a $T\_INTLIT$ (i.e. an integer literal), the $intvalue$ field 
 The $scan.c$ file holds the functions of our lexical scanner. We are going to read in one character at a time from our input file. However, there will be times when we need to "put back" a character if we have read too far ahead in the input stream. We also want to track what line we are currently on so that we can print the line number in our debug messages. All of this is done by the $next()$ function:
 
 \begin{lstlisting}
-static int next(void) {
-    int c;
+    static int next(void) {
+        int c;
 
-    if (Putback) {                // Use the character put
-        c = Putback;              // back if there is one
-        Putback = 0;
+        if (Putback) {                // Use the character put
+            c = Putback;              // back if there is one
+            Putback = 0;
+            return c;
+        }
+
+        c = fgetc(Infile);            // Read from input file
+        if ('\n' == c)
+        Line++;                       // Increment line count
         return c;
     }
-
-    c = fgetc(Infile);            // Read from input file
-    if ('\n' == c)
-    Line++;                       // Increment line count
-    return c;
-}
 \end{lstlisting}
 
 The $Putback$ and $Line$ variables are defined in $data.h$ along with our input file pointer:
 
 \begin{lstlisting}
-extern_ int     Line;
-extern_ int     Putback;
-extern_ FILE    *Infile;
+    extern_ int     Line;
+    extern_ int     Putback;
+    extern_ FILE    *Infile;
 \end{lstlisting}
 
 All C files will include this where $extern\_$ is replaced with $extern$. But $main.c$ will remove the $extern\_$; hence, these variables will "belong" to $main.c$.
@@ -218,10 +216,10 @@ All C files will include this where $extern\_$ is replaced with $extern$. But $m
 Finally, how do we put a character back into the input stream? Thus:
 
 \begin{lstlisting}
-// Put back an unwanted character
-static void putback(int c) {
-    Putback = c;
-}
+    // Put back an unwanted character
+    static void putback(int c) {
+        Putback = c;
+    }
 \end{lstlisting}
 
 \subsection{Ignoring Whitespace}
@@ -229,18 +227,18 @@ static void putback(int c) {
 We need a function that reads and silently skips whitespace characters until it gets a non-whitesapce character, and returns it. Thus:
 
 \begin{lstlisting}
-// Skip past input that we don't nee   d to deal with,
-// i.e. whitesapce, newlines. Return the first
-// character we do need to deal with.
-static int skip(void) {
-    int c;
+    // Skip past input that we don't nee   d to deal with,
+    // i.e. whitesapce, newlines. Return the first
+    // character we do need to deal with.
+    static int skip(void) {
+        int c;
 
-    c = next();
-    while (' ' == c || '\t' == c || '\n' == c || '\r' == c || '\f' == c) {
         c = next();
+        while (' ' == c || '\t' == c || '\n' == c || '\r' == c || '\f' == c) {
+            c = next();
+        }
+        return (c);
     }
-    return (c);
-}
 \end{lstlisting}
 
 \subsection{Scanning Tokens: $scan()$}
@@ -1085,5 +1083,73 @@ The above way  of constructing a recursive descent parser with explicit operator
 One way to cut down on the amount of code is to use a \href{https://en.wikipedia.org/wiki/Operator-precedence_parser}{Operator-precedence parser} which has a table of precedence values associated with each token instead of having that replicate the explicit precedence in the grammar.
 
 At this point I highly recommend that you read \href{https://journal.stuffwithstuff.com/2011/03/19/pratt-parsers-expression-parsing-made-easy/}{Pratt Parsers: Expression Parsing Made Easy} by Bob Nystrom. Pratt parsers still make my head hurt, so read as much as you can and get comfortable with the basic concept.
+
+I've implemented Pratt parsing in $expr.c$ which is a drop-in replacement for $expr2.c$. Let's start the tour. Firstly, we need some code to determin the precedence levels for each token:
+
+\begin{lstlisting}
+  // Operator precedence for each token
+  static int OpPrec[] = { 0, 10, 10, 20, 20,    0 };
+  //                     EOF  +   -   *   /  INTLIT
+  
+  // Check that we have a binary operator and
+  // return its precedence.
+  static int op_precedence(int tokentype) {
+    int prec = OpPrec[tokentype];
+    if (prec == 0) {
+      fprintf(stderr, "syntax error on line %d, token %d\n", Line, tokentype);
+      exit(1);
+    }
+    return (prec);
+  }
+\end{lstlisting}
+
+Higher numbers (e.g. 20) mean a higher precedence than lower numbers (e.g. 10). Now, you might ask: why have a function when you have a look-up table called $OpPrec[]$? The answer is: to spot syntax errors.
+
+Consider an input that looks like $234\quad 101 + 12$. We can scan in the first two tokens. But if we simply used $OpPrec[]$ to get the precedence of the second $101$ token, we wouldn't notice that it isn't an operator. Thus, the $op_precedence()$ function enforces the correct grammar syntax.
+
+Now, instead of having a function for each precedence level, we have a single expression function that uses the table of operator precedences:
+
+\begin{lstlisting}
+    // Return an AST tree whose root is a binary operator.
+    // Parameter ptp is the previous token's precedence.
+    struct ASTnode *binexpr(int ptp) {
+        struct ASTnode *left, *right;
+        int tokentype;
+    
+        // Get the integer literal on the left.
+        // Fetch the next token at the same time.
+        left = primary();
+    
+        // If no tokens left, return just the left node
+        tokentype = Token.token;
+        if (tokentype == T_EOF)
+        return (left);
+    
+        // While the precedence of this token is
+        // more than that of the previous token precedence
+        while (op_precedence(tokentype) > ptp) {
+            // Fetch in the next integer literal
+            scan(&Token);
+        
+            // Recursively call binexpr() with the
+            // precedence of our token to build a sub-tree
+            right = binexpr(OpPrec[tokentype]);
+        
+            // Join that sub-tree with ours. Convert the token
+            // into an AST operation at the same time.
+            left = mkastnode(arithop(tokentype), left, right, 0);
+        
+            // Update the details of the current token.
+            // If no tokens left, return just the left node
+            tokentype = Token.token;
+            if (tokentype == T_EOF)
+                return (left);
+        }
+    
+        // Return the tree we have when the precedence
+        // is the same or lower
+        return (left);
+    }
+\end{lstlisting}
 
 \end{document}
