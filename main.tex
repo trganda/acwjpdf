@@ -1080,4 +1080,10 @@ The code is similar to $additive\_expr()$ except that we get to call $primary()$
 
 The above way  of constructing a recursive descent parser with explicit operator precedence can be inefficient because of all the function calls needed to reach the right level of precedence. There also has to be functions to deal with each level of operator precedence, so we end up with lots of lines of code.
 
+\subsection{The Alternative: Pratt Parsing (Operator-precedence parser)}
+
+One way to cut down on the amount of code is to use a \href{https://en.wikipedia.org/wiki/Operator-precedence_parser}{Operator-precedence parser} which has a table of precedence values associated with each token instead of having that replicate the explicit precedence in the grammar.
+
+At this point I highly recommend that you read \href{https://journal.stuffwithstuff.com/2011/03/19/pratt-parsers-expression-parsing-made-easy/}{Pratt Parsers: Expression Parsing Made Easy} by Bob Nystrom. Pratt parsers still make my head hurt, so read as much as you can and get comfortable with the basic concept.
+
 \end{document}
