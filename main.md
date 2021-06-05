@@ -59,10 +59,10 @@ lower-level language than the input). The main steps are:
 ![](Figs/parsing_steps.png)
 
  + Do [lexical analysis](https://en.wikipedia.org/wiki/Lexical_analysis)
-to recognise the lexical elements. In several languages, `=` is different
+to recognize the lexical elements. In several languages, `=` is different
 to `==`, so you can't just read a single `=`. We call these lexical
 elements *tokens*.
- + [Parse](https://en.wikipedia.org/wiki/Parsing) the input, i.e. recognise
+ + [Parse](https://en.wikipedia.org/wiki/Parsing) the input, i.e. recognize
 the syntax and structural elements of the input and ensure that they 
 conform to the *grammar* of the language. For example, your language
 might have this decision-making

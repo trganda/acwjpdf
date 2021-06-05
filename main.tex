@@ -1,4 +1,4 @@
-\documentclass[journal, onecolumn]{IEEEtran}
+\documentclass[journal, onecolumn, 12pt]{IEEEtran}
 
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
@@ -38,23 +38,23 @@
 }
 
 %opening
-\title{acwj}
+\title{Journal of A Simple Compiler}
 \author{Trganda}
 
 \begin{document}
 
 \maketitle
 
-\section{Part 0: Introducation}
+\section{Part 0: Introduction}
 
 I've decided to go on a compiler writing journey.
 In the past I've written some \href{https://github.com/DoctorWkt/pdp7-unix/blob/master/tools/as7}{assemblers},
-and I've written a \href{https://github.com/DoctorWkt/h-compiler}{simaple compiler} for a typeless language.
+and I've written a \href{https://github.com/DoctorWkt/h-compiler}{simple compiler} for a typeless language.
 But I've never written a compiler that can compile itself.
 So that's where I'm headed on this journey.
 
 As part of the process, I'm going to write up my work so that others can follow along.
-This will also help me to clarify my thoughts and ideas. Hopefully you, and I, will find this useful!
+This will also help me to clarify my thoughts and ideas. Hopefully you, and I, will find this useful!s
 
 \subsection{Goals of the journey}
 
@@ -64,8 +64,8 @@ Here are my goals, and non-goals, for the journey:
     \item To write a self-compiling compiler. I think that if the compiler can compile itself, it gets to call itself a real compiler.
     \item To target at least one real hardware platform. I've seen a few compilers that generate code for hypothetical machines.
           I want my compiler to work on real hardware. Also, if possible, I want to write the compiler so that it can support multiple backends for different hardware platforms.
-    \item Pratical before research. There's a whole lot of research in the area of compilers. I want to start from absolute zero on this journey, so I'll tend to go for a practical approach and not a theory-heavy approach. That said, there will be times when I'll need to introduce (and implement) some theory-based stuff.
-    \item Follow the KISS principle: keep it simple, stupid! I'm definitely going to be using Ken Thompson's principe here: "When in doubt, use brute force."
+    \item Practical before research. There's a whole lot of research in the area of compilers. I want to start from absolute zero on this journey, so I'll tend to go for a practical approach and not a theory-heavy approach. That said, there will be times when I'll need to introduce (and implement) some theory-based stuff.
+    \item Follow the KISS principle: keep it simple, stupid! I'm definitely going to be using Ken Thompson's Principe here: "When in doubt, use brute force."
     \item Take a lot of small steps to reach the final goal. I'll break the journey up into a lot of simple steps instead of taking large leaps. This will make each new addition to the compiler a bite-sized and easily digestible thing.
 \end{itemize}
 
@@ -87,8 +87,8 @@ The job of a compiler is to translate input in one language (usually a high-leve
 \end{figure}
 
 \begin{itemize}
-    \item Do \href{https://en.wikipedia.org/wiki/Lexical_analysis}{lexical analysis} to recognise the lexical elements. In several languages, {\color{red}=} is different to {\color{red}==}, so you can't just read a single {\color{red}=}. We call these lexical elements \textit{tokens}.
-    \item \href{https://en.wikipedia.org/wiki/Parsing}{Parse} the input, i.e. recognise the syntax and structural elements of the input and ensure that they conform to the \textit{grammar} of the language. For example, your language might have this decision-making structure:
+    \item Do \href{https://en.wikipedia.org/wiki/Lexical_analysis}{lexical analysis} to recognize the lexical elements. In several languages, {\color{red}=} is different to {\color{red}==}, so you can't just read a single {\color{red}=}. We call these lexical elements \textit{tokens}.
+    \item \href{https://en.wikipedia.org/wiki/Parsing}{Parse} the input, i.e. recognize the syntax and structural elements of the input and ensure that they conform to the \textit{grammar} of the language. For example, your language might have this decision-making structure:
     \begin{lstlisting}
 if (x < 23) {
     print("x is smaller than 23\n");
@@ -99,7 +99,7 @@ if (x < 23) {
 if (x < 23)
     print("x is smaller than 23\n");
     \end{lstlisting}
-    This is also the place where the compiler cna detect syntax errors, like if the semicolon was missing on the end of first \textit{print} statement.
+    This is also the place where the compiler can detect syntax errors, like if the semicolon was missing on the end of first \textit{print} statement.
     \item Do \href{https://en.wikipedia.org/wiki/Semantic_analysis_(compilers)}{semantic analysis} of the input, i.e. understand the meaning of the input. This is actually different from recognising the syntax and structure. For example, in English, a sentence might have the form \textbf{<subject> <verb> <adjective> <object>}.
     \begin{lstlisting}
 David ate lovely bananas.
@@ -110,7 +110,7 @@ Jennifer hates green tomatoes.
 
 \subsection{Resources}
 
-There's a lot of comipler resources out on the Internet. Here are the ones I'll be looking at.
+There's a lot of compiler resources out on the Internet. Here are the ones I'll be looking at.
 
 \subsubsection{Learning Resources}
 
@@ -136,9 +136,9 @@ While I'm going to build my own compiler, I plan on looking at other compilers f
 
 In particular, I'll be using a lot of the ideas, and some of the code, from the SubC compiler.
 
-\subsection{Setting Up the Development Enviroment}
+\subsection{Setting Up the Development Environment}
 
-Assuming that you want to come along on this journey, here's what you'll need. I'm going to use a Linux development enviroment, so download and set up your favourite Linux system: I'm using Lubuntu $18.04$.
+Assuming that you want to come along on this journey, here's what you'll need. I'm going to use a Linux development environment, so download and set up your favorite Linux system: I'm using Lubuntu $18.04$.
 
 I'm going to target two hardware platforms: Intel x86-64 and 32-bit ARM. I'll use a PC running Lubuntu $18.04$ as the Intel target, and a Raspberry Pi running Raspbian as the ARM target.
 
@@ -243,7 +243,7 @@ We need a function that reads and silently skips whitespace characters until it 
 
 \subsection{Scanning Tokens: $scan()$}
 
-So new we can read characters in while skipping whitesapce; we can also put back a character if we read one character too far ahead. We can now write our first lexical scanner:
+So new we can read characters in while skipping whitespace; we can also put back a character if we read one character too far ahead. We can now write our first lexical scanner:
 
 \begin{lstlisting}
     // Scan and return the next token found in the input.
@@ -280,11 +280,11 @@ So new we can read characters in while skipping whitesapce; we can also put back
     }
 \end{lstlisting}
 
-That's it for the simple one-character tokens: for each recognised character, turn it into a token. You may ask: why not just put the recognised character into the $struct token$? The answer is that later we will need to recognised multi-character tokens such as $==$ and keywords like $if$ and $while$. So it will make life easier to have an enumerated list of token values.
+That's it for the simple one-character tokens: for each recognized character, turn it into a token. You may ask: why not just put the recognized character into the $struct token$? The answer is that later we will need to recognized multi-character tokens such as $==$ and keywords like $if$ and $while$. So it will make life easier to have an enumerated list of token values.
 
 \subsection{Integer Literal Values}
 
-In fact, we already have to face this situation as we also need to recoginse integer literal values like $3827$ and $87731$. Here is the missing $default$ code from the $switch$ statement:
+In fact, we already have to face this situation as we also need to recognize integer literal values like $3827$ and $87731$. Here is the missing $default$ code from the $switch$ statement:
 
 \begin{lstlisting}
 default:
@@ -425,15 +425,15 @@ I've provided some example input files so you can see what tokens the scanner fi
 
 \subsection{Conclusion and What's Next}
 
-We've started small and we have a simple lexical scanner that recognises the four main maths operators and also integer values. We saw that we needed to skip whitespace and put back characters if we read too far into the input.
+We've started small and we have a simple lexical scanner that recognizes the four main maths operators and also integer values. We saw that we needed to skip whitespace and put back characters if we read too far into the input.
 
 Single character tokens are easy to scan, but multi-character tokens are a bit harder. But at the end, the $scan()$ function returns the next token from the input file in a $struct token$ variable.
 
-In the next part of our compiler writing journey, we will build a recursive descent parser to interpret the grammer of our input files, and calculate \& print out the final value for each file.
+In the next part of our compiler writing journey, we will build a recursive descent parser to interpret the grammar of our input files, and calculate \& print out the final value for each file.
 
 \section{Part 2: Introduction to Parsing}
 
-In this part of our compiler writing journey, I'm going to introduce the basics of a parser. As I mentioned in the first part, the job of the parser is to recognise the syntax and structural elements of the input and ensure that they conform to the $grammer$ of the language.
+In this part of our compiler writing journey, I'm going to introduce the basics of a parser. As I mentioned in the first part, the job of the parser is to recognize the syntax and structural elements of the input and ensure that they conform to the $grammer$ of the language.
 
 We already have several language elements that we can scan in, i.e. our tokens:
 
@@ -442,13 +442,13 @@ We already have several language elements that we can scan in, i.e. our tokens:
     \item deciaml whole numbers which have $1$ or more digits $0$ .. $9$
 \end{itemize}
 
-Now let's define a grammer for the language that our parser will recognise.
+Now let's define a grammar for the language that our parser will recognize.
 
 \subsection{BNF: Backus-Naur Form}
 
-You will come across the use of \href{https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form}{BNF} at some point if you get into dealing with computer languages. I will just introduce enough of the BNF syntax here to express the grammar we want to recognise.
+You will come across the use of \href{https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form}{BNF} at some point if you get into dealing with computer languages. I will just introduce enough of the BNF syntax here to express the grammar we want to recognize.
 
-We want a grammer to express maths expressions with whole numbers. Here is the BNF description of the grammer:
+We want a grammar to express maths expressions with whole numbers. Here is the BNF description of the grammar:
 
 \begin{lstlisting}
     expression: number
@@ -475,7 +475,7 @@ The vertical bars separate options in the grammar, so the above says:
 
 It should be pretty obvious that the BNF definition of the grammar is $recursive$: an expression is defined by referencing other expressions. But there is a way to \textbf{bottom-out} the recursion: when an expression turns out to be a number, this is always a $T\_INTLIT$ token and thus not recursive.
 
-In BNF, we say that "expression" and "number" are $non-termainl$ symbols, as they are produced by rules in the grammar. Howerer, $T\_INTLIT$ is a $terminal$ symbol as it is not defined by any rule. Instead, it is an already-recognised token in the language. Similarly, the four maths operator tokens are terminal symbols.
+In BNF, we say that "expression" and "number" are $non-termainl$ symbols, as they are produced by rules in the grammar. However, $T\_INTLIT$ is a $terminal$ symbol as it is not defined by any rule. Instead, it is an already-recognized token in the language. Similarly, the four maths operator tokens are terminal symbols.
 
 \subsection{Recursive Descent Parsing}
 
@@ -521,7 +521,7 @@ Yes, the function was able to recursively parse the input $2 + 3 - 5\quad T\_EOF
 Of course, we haven't done anything with the input, but that isn't the job of the parser. The parser's job is to $recognise$ the input, and warn of any syntax errors. Someone else is going to do the $semantic analysis$ of the input, i.e. to understand and perform the meaning of this input.
 
 \begin{quote}
-Later on, you will see that this isn't actually true. It often makes sense to interwine the syntax analysis and semantic analysis.
+Later on, you will see that this isn't actually true. It often makes sense to intertwine the syntax analysis and semantic analysis.
 \end{quote}
 
 \subsection{Abstract Syntax Trees}
@@ -1149,6 +1149,152 @@ Now, instead of having a function for each precedence level, we have a single ex
         // Return the tree we have when the precedence
         // is the same or lower
         return (left);
+    }
+\end{lstlisting}
+
+Firstly, note that this is still recursive like the previous parser functions.
+This time, we receive the precedence level of the token that was found before we got called. $main()$ will call us with the lowest precedence, 0, but we will call ourselves with higher values. You should also spot that the code is quite similar to the $multiplicative_expr()$ function: read in an integer literal, get the operator's token type, then loop building a tree.
+
+The difference is the loop condition and body:
+
+\begin{lstlisting}
+    multiplicative_expr():
+      while ((tokentype == T_STAR) || (tokentype == T_SLASH)) {
+        scan(&Token); right = primary();
+
+        left = mkastnode(arithop(tokentype), left, right, 0);
+
+        tokentype = Token.token;
+        if (tokentype == T_EOF) return (left);
+      }
+
+    binexpr():
+      while (op_precedence(tokentype) > ptp) {
+        scan(&Token); right = binexpr(OpPrec[tokentype]);
+
+        left = mkastnode(arithop(tokentype), left, right, 0);
+
+        tokentype = Token.token;
+        if (tokentype == T_EOF) return (left);
+      }
+\end{lstlisting}
+
+With the Pratt parser, when the next operator has a higher precedence than our current token, instead of just getting the next integer literal with $primary()$, we call ourselves with $binexpr(OpPrec[tokentype])$ to raise the operator precedence. Once we hit a token at our precedence level or lower, we will simply:
+
+\begin{lstlisting}
+    return (left);
+\end{lstlisting}
+
+This will either be a sub-tree with lots of nodes and operators at a higher precedence that the operator that called us, or it might be a single integer literal for an operator at the same precedence as us. Now we have a single function to enforce the operator precedence, and thus implements the semantics of our language.
+
+\subsection{Putting Both Parsers Into Action}
+
+You can make two programs, one with each parser:
+\begin{lstlisting}
+    $ make parser                                        # Pratt Parser
+    cc -o parser -g expr.c interp.c main.c scan.c tree.c
+    
+    $ make parser2                                       # Precedence Climbing
+    cc -o parser2 -g expr2.c interp.c main.c scan.c tree.c
+\end{lstlisting}
+
+You can also test both parser with the same input files from the previous part of our journey:
+
+\begin{lstlisting}
+    $ make test
+    (./parser input01; \
+    ./parser input02; \
+    ./parser input03; \
+    ./parser input04; \
+    ./parser input05)
+    15                                       # input01 result
+    29                                       # input02 result
+    syntax error on line 1, token 5          # input03 result
+    Unrecognised character . on line 3       # input04 result
+    Unrecognised character a on line 1       # input05 result
+    
+    $ make test2
+    (./parser2 input01; \
+    ./parser2 input02; \
+    ./parser2 input03; \
+    ./parser2 input04; \
+    ./parser2 input05)
+    15                                       # input01 result
+    29                                       # input02 result
+    syntax error on line 1, token 5          # input03 result
+    Unrecognised character . on line 3       # input04 result
+    Unrecognised character a on line 1       # input05 result
+\end{lstlisting}
+
+\subsection{Conclusion and What's Next}
+
+It's probably time to step back a bit and see where we've got to. We now have:
+
+\begin{itemize}
+  \item a scanner that recognizes and returns the tokens in our language
+  \item a parser that recognizes our grammar, reports syntax errors and builds an Abstract Syntax Tree
+  \item a precedence table for the parser that implements the semantics of our language
+  \item an interpreter that traverses the Abstract Syntax Tree depth-first and calculates the result of the expression in the input
+\end{itemize}
+
+What we don't have yet is a compiler. But we are so close to making our first compilers! In the next part of our compiler writing journey, we will replace the interpreter. In its place, we will write a translator that generates x86-64 assembly code for each AST node that has a maths operator. We will also generate some assembly preamble and postamble to support the assembly code that the generator outputs.
+
+\section{Part 4: An Actual Compiler}
+
+It's about time that I met my promise of actually writing a compiler. So in this part of the journey we are going to replace the interpreter in our program with code that generates x86-64 assembly code.
+
+\subsection{Revising the Interpreter}
+
+Before we do, it will be worthwhile to revisit the interpreter code in $interp.c$:
+
+\begin{lstlisting}
+    int interpretAST(struct ASTnode *n) {
+      int leftval, rightval;
+    
+      if (n->left) leftval = interpretAST(n->left);
+      if (n->right) rightval = interpretAST(n->right);
+    
+      switch (n->op) {
+        case A_ADD:      return (leftval + rightval);
+        case A_SUBTRACT: return (leftval - rightval);
+        case A_MULTIPLY: return (leftval * rightval);
+        case A_DIVIDE:   return (leftval / rightval);
+        case A_INTLIT:   return (n->intvalue);
+    
+        default:
+          fprintf(stderr, "Unknown AST operator %d\n", n->op);
+          exit(1);
+      }
+    }
+\end{lstlisting}
+
+The $interpretAST()$ function walks the given AST tree depth-first. It evaluates any left sub-tree, then the right sub-tree. Finally, it uses the $op$ value at the base of the current tree to operate on these children. If the $op$ value is one of the four math operators, then this math operation is performed. If the $op$ value indicates that the node is simply an integer literal, the literal value is return. The function returns the final value for this tree. And, as it is recursive, it will calculate the final value for a whole tree one sub-tree at a time.
+
+\subsection{Changing to Assembly Code Generation}
+
+We are going to write an assembly code generator which is generic. This is, in turn, going to call out to a set of CPU-specific code generation functions. Here is the generic assembly code generator in $gen.c$:
+
+\begin{lstlisting}
+    // Given an AST, generate
+    // assembly code recursively
+    static int genAST(struct ASTnode *n) {
+      int leftreg, rightreg;
+    
+      // Get the left and right sub-tree values
+      if (n->left) leftreg = genAST(n->left);
+      if (n->right) rightreg = genAST(n->right);
+    
+      switch (n->op) {
+        case A_ADD:      return (cgadd(leftreg,rightreg));
+        case A_SUBTRACT: return (cgsub(leftreg,rightreg));
+        case A_MULTIPLY: return (cgmul(leftreg,rightreg));
+        case A_DIVIDE:   return (cgdiv(leftreg,rightreg));
+        case A_INTLIT:   return (cgload(n->intvalue));
+    
+        default:
+          fprintf(stderr, "Unknown AST operator %d\n", n->op);
+          exit(1);
+      }
     }
 \end{lstlisting}
 
