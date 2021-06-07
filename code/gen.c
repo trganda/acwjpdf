@@ -7,11 +7,7 @@
 
 // Given an AST, generate
 // assembly code recursively
-<<<<<<< HEAD
 int genAST(struct ASTnode *n) {
-=======
-static int genAST(struct ASTnode *n) {
->>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
   int leftreg, rightreg;
 
   // Get the left and right sub-tree values
@@ -22,7 +18,6 @@ static int genAST(struct ASTnode *n) {
 
   switch (n->op) {
     case A_ADD:
-<<<<<<< HEAD
       return (cgadd(leftreg, rightreg));
     case A_SUBTRACT:
       return (cgsub(leftreg, rightreg));
@@ -30,15 +25,6 @@ static int genAST(struct ASTnode *n) {
       return (cgmul(leftreg, rightreg));
     case A_DIVIDE:
       return (cgdiv(leftreg, rightreg));
-=======
-      return (cgadd(leftreg,rightreg));
-    case A_SUBTRACT:
-      return (cgsub(leftreg,rightreg));
-    case A_MULTIPLY:
-      return (cgmul(leftreg,rightreg));
-    case A_DIVIDE:
-      return (cgdiv(leftreg,rightreg));
->>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
     case A_INTLIT:
       return (cgload(n->intvalue));
     default:
@@ -47,7 +33,6 @@ static int genAST(struct ASTnode *n) {
   }
 }
 
-<<<<<<< HEAD
 void genpreamble() {
   cgpreamble();
 }
@@ -59,13 +44,4 @@ void genfreeregs() {
 }
 void genprintint(int reg) {
   cgprintint(reg);
-=======
-void generatecode(struct ASTnode *n) {
-  int reg;
-
-  cgpreamble();
-  reg= genAST(n);
-  cgprintint(reg);
-  cgpostamble();
->>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }

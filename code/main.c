@@ -24,10 +24,6 @@ static void usage(char *prog) {
 // if we don't have an argument. Open up the input
 // file and call scanfile() to scan the tokens in it.
 void main(int argc, char *argv[]) {
-<<<<<<< HEAD
-=======
-  struct ASTnode *n;
->>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 
   if (argc != 2)
     usage(argv[0]);
@@ -45,25 +41,10 @@ void main(int argc, char *argv[]) {
     exit(1);
   }
 
-<<<<<<< HEAD
   scan(&Token);			// Get the first token from the input
   genpreamble();		// Output the preamble
   statements();			// Parse the statements in the input
   genpostamble();		// Output the postamble
   fclose(Outfile);		// Close the output file and exit
-=======
-  // Create the output file
-  if ((Outfile = fopen("out.s", "w")) == NULL) {
-    fprintf(stderr, "Unable to create out.s: %s\n", strerror(errno));
-    exit(1);
-  }
-
-  scan(&Token);			// Get the first token from the input
-  n = binexpr(0);		// Parse the expression in the file
-  printf("%d\n", interpretAST(n));	// Calculate the final result
-  generatecode(n);
-
-  fclose(Outfile);
->>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
   exit(0);
 }
