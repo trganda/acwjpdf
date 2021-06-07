@@ -9,20 +9,38 @@
 // List of available registers
 // and their names
 static int freereg[4];
+<<<<<<< HEAD
 static char *reglist[4] = { "%r8", "%r9", "%r10", "%r11" };
 
 // Set all registers as available
 void freeall_registers(void) {
   freereg[0] = freereg[1] = freereg[2] = freereg[3] = 1;
+=======
+static char *reglist[4]= { "%r8", "%r9", "%r10", "%r11" };
+
+// Set all registers as available
+void freeall_registers(void)
+{
+  freereg[0]= freereg[1]= freereg[2]= freereg[3]= 1;
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Allocate a free register. Return the number of
 // the register. Die if no available registers.
+<<<<<<< HEAD
 static int alloc_register(void) {
   for (int i = 0; i < 4; i++) {
     if (freereg[i]) {
       freereg[i] = 0;
       return (i);
+=======
+static int alloc_register(void)
+{
+  for (int i=0; i<4; i++) {
+    if (freereg[i]) {
+      freereg[i]= 0;
+      return(i);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
     }
   }
   fprintf(stderr, "Out of registers!\n");
@@ -31,11 +49,17 @@ static int alloc_register(void) {
 
 // Return a register to the list of available registers.
 // Check to see if it's not already there.
+<<<<<<< HEAD
 static void free_register(int reg) {
+=======
+static void free_register(int reg)
+{
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
   if (freereg[reg] != 0) {
     fprintf(stderr, "Error trying to free register %d\n", reg);
     exit(1);
   }
+<<<<<<< HEAD
   freereg[reg] = 1;
 }
 
@@ -43,6 +67,17 @@ static void free_register(int reg) {
 void cgpreamble() {
   freeall_registers();
   fputs("\t.text\n"
+=======
+  freereg[reg]= 1;
+}
+
+// Print out the assembly preamble
+void cgpreamble()
+{
+  freeall_registers();
+  fputs(
+	"\t.text\n"
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 	".LC0:\n"
 	"\t.string\t\"%d\\n\"\n"
 	"printint:\n"
@@ -61,12 +96,29 @@ void cgpreamble() {
 	"\n"
 	"\t.globl\tmain\n"
 	"\t.type\tmain, @function\n"
+<<<<<<< HEAD
 	"main:\n" "\tpushq\t%rbp\n" "\tmovq	%rsp, %rbp\n", Outfile);
 }
 
 // Print out the assembly postamble
 void cgpostamble() {
   fputs("\tmovl	$0, %eax\n" "\tpopq	%rbp\n" "\tret\n", Outfile);
+=======
+	"main:\n"
+	"\tpushq\t%rbp\n"
+	"\tmovq	%rsp, %rbp\n",
+  Outfile);
+}
+
+// Print out the assembly postamble
+void cgpostamble()
+{
+  fputs(
+	"\tmovl	$0, %eax\n"
+	"\tpopq	%rbp\n"
+	"\tret\n",
+  Outfile);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Load an integer literal value into a register.
@@ -74,11 +126,19 @@ void cgpostamble() {
 int cgload(int value) {
 
   // Get a new register
+<<<<<<< HEAD
   int r = alloc_register();
 
   // Print out the code to initialise it
   fprintf(Outfile, "\tmovq\t$%d, %s\n", value, reglist[r]);
   return (r);
+=======
+  int r= alloc_register();
+
+  // Print out the code to initialise it
+  fprintf(Outfile, "\tmovq\t$%d, %s\n", value, reglist[r]);
+  return(r);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Add two registers together and return
@@ -86,7 +146,11 @@ int cgload(int value) {
 int cgadd(int r1, int r2) {
   fprintf(Outfile, "\taddq\t%s, %s\n", reglist[r1], reglist[r2]);
   free_register(r1);
+<<<<<<< HEAD
   return (r2);
+=======
+  return(r2);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Subtract the second register from the first and
@@ -94,7 +158,11 @@ int cgadd(int r1, int r2) {
 int cgsub(int r1, int r2) {
   fprintf(Outfile, "\tsubq\t%s, %s\n", reglist[r2], reglist[r1]);
   free_register(r2);
+<<<<<<< HEAD
   return (r1);
+=======
+  return(r1);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Multiply two registers together and return
@@ -102,7 +170,11 @@ int cgsub(int r1, int r2) {
 int cgmul(int r1, int r2) {
   fprintf(Outfile, "\timulq\t%s, %s\n", reglist[r1], reglist[r2]);
   free_register(r1);
+<<<<<<< HEAD
   return (r2);
+=======
+  return(r2);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Divide the first register by the second and
@@ -113,7 +185,11 @@ int cgdiv(int r1, int r2) {
   fprintf(Outfile, "\tidivq\t%s\n", reglist[r2]);
   fprintf(Outfile, "\tmovq\t%%rax,%s\n", reglist[r1]);
   free_register(r2);
+<<<<<<< HEAD
   return (r1);
+=======
+  return(r1);
+>>>>>>> dbb1bd9c1f55a964abea3638f439ef50ef2d730e
 }
 
 // Call printint() with the given register

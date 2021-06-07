@@ -1337,9 +1337,9 @@ That's the generic code generator ou of the road. Now we need to look at the gen
 Any CPU has a limited number of registers. We will have to allocate a register to hold the integer literal values, plus any calculation that we perform on them. However, once we've used a value, we can often discard the value and hence free up the register holding it. Then we can re-use that register for another value. There are three functions that deal with register allocation:
 
 \begin{itemize}
-  \item $freeall_registers()$: Set all registers as available
-  \item $alloc_register()$: Allocate a free register
-  \item $free_register()$: Free an allocated register
+  \item $freeall\_registers()$: Set all registers as available
+  \item $alloc\_register()$: Allocate a free register
+  \item $free\_register()$: Free an allocated register
 \end{itemize}
 
 I'm not going to go through the code as it's straight forward but with some error checking. Right now, if I run out of registers then the program will crash. Later on, I'll deal with the situation when we have run out of free registers. The code works on generic registers: r0, r1, r2 and r3. There is a table of strings with the actual register name:
@@ -1352,7 +1352,7 @@ This makes these functions fairly independent of CPU architecture.
 
 \subsubsection{Loading a Register}
 
-This is done in $cgload()$: aregister is allocated, then a $movq$ instruction loads a literal value into the allocated register.
+This is done in $cgload()$: a register is allocated, then a $movq$ instruction loads a literal value into the allocated register.
 
 \begin{lstlisting}
     // Load an integer literal value into a register.
