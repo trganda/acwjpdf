@@ -11,10 +11,11 @@ struct ASTnode *mkastleaf(int op, int intvalue);
 struct ASTnode *mkastunary(int op, struct ASTnode *left, int intvalue);
 
 // gen.c
-int genAST(struct ASTnode *n);
+int genAST(struct ASTnode *n, int reg);
 void genpreamble();
 void genpostamble();
 void genfreeregs();
+void genglobsym(char *s);
 void genprintint(int reg);
 
 // cg.c
@@ -26,6 +27,9 @@ int cgadd(int r1, int r2);
 int cgsub(int r1, int r2);
 int cgmul(int r1, int r2);
 int cgdiv(int r1, int r2);
+void cgglobsym(char *sym);
+int cgstorglob(int r, char *identifier);
+int cgloadglob(char *identifier);
 void cgprintint(int r);
 
 // expr.c
@@ -37,3 +41,12 @@ void statements(void);
 // misc.c
 void match(int t, char *what);
 void semi(void);
+void ident(void);
+void fatal(char *s);
+void fatals(char *s1, char *s2);
+void fatald(char *s, int d);
+void fatalc(char *s, int c);
+
+// sym.c
+int findglob(char *s);
+int addglob(char *name);

@@ -9,20 +9,31 @@
 // AST node representing it.
 static struct ASTnode *primary(void) {
   struct ASTnode *n;
+  int id;
 
   // For an INTLIT token, make a leaf AST node for it
   // and scan in the next token. Otherwise, a syntax error
   // for any other token type.
   switch (Token.token) {
     case T_INTLIT:
+      // For an INTLIT token, make a leaf AST node for it.
       n = mkastleaf(A_INTLIT, Token.intvalue);
-      scan(&Token);
-      return (n);
+      break;
+    case T_IDENT:
+      // Check that this identifier exists
+      id = findglob(Text);
+      if (id == -1)
+        fatals("Unknown variable", Text);
+      // Make a leaf AST node for it
+      n = mkastleaf(A_IDENT, id);
+      break;
     default:
-      fprintf(stderr, "syntax error on line %d, token %d\n", Line,
-	      Token.token);
-      exit(1);
+      fatald("syntax error, token", Token.token);
   }
+
+  // Scan in the next token and return the leaf node
+  scan(&Token);
+  return (n);
 }
 
 

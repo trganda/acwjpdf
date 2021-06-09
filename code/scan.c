@@ -95,9 +95,13 @@ static int scanident(int c, char *buf, int lim) {
 // to waste time strcmp()ing against all the keywords.
 static int keyword(char *s) {
   switch (*s) {
+    case 'i':
+      if (!strcmp(s, "int"))
+        return (T_INT);
+      break;
     case 'p':
       if (!strcmp(s, "print"))
-	return (T_PRINT);
+	      return (T_PRINT);
       break;
   }
   return (0);
@@ -132,26 +136,29 @@ int scan(struct token *t) {
     case ';':
       t->token = T_SEMI;
       break;
+    case '=':
+      t->token = T_EQUALS;
+      break;
     default:
 
       // If it's a digit, scan the
       // literal integer value in
       if (isdigit(c)) {
-	t->intvalue = scanint(c);
-	t->token = T_INTLIT;
-	break;
+        t->intvalue = scanint(c);
+        t->token = T_INTLIT;
+        break;
       } else if (isalpha(c) || '_' == c) {
-	// Read in a keyword or identifier
-	scanident(c, Text, TEXTLEN);
+        // Read in a keyword or identifier
+        scanident(c, Text, TEXTLEN);
 
-	// If it's a recognised keyword, return that token
-	if (tokentype = keyword(Text)) {
-	  t->token = tokentype;
-	  break;
-	}
-	// Not a recognised keyword, so an error for now
-	printf("Unrecognised symbol %s on line %d\n", Text, Line);
-	exit(1);
+        // If it's a recognised keyword, return that token
+        if (tokentype = keyword(Text)) {
+          t->token = tokentype;
+          break;
+        }
+        // Not a recognised keyword, so it must be an identifier
+        t->token = T_IDENT;
+        break;
       }
       // The character isn't part of any recognised token, error
       printf("Unrecognised character %c on line %d\n", c, Line);
